@@ -14,7 +14,7 @@ RUN chmod +x /app/gradlew
 
 # Build with Railway-compliant cache
 WORKDIR /app/Ktor-Backend
-RUN --mount=type=cache,id=gradle-cache-$RAILWAY_PROJECT_ID,target=/root/.gradle \
+RUN --mount=type=cache,id=gradle-cache-33a07333-148d-4eb3-b97b-11c76dcde17c,target=/root/.gradle \
     ./../gradlew :Ktor-Backend:installDist --no-daemon
 
 # Runtime image
