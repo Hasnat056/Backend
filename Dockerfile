@@ -16,9 +16,11 @@ COPY gradle.properties /app/
 RUN chmod +x /app/gradlew
 
 # Build the Ktor module with Railway-compliant cache IDs
+
 WORKDIR /app/Ktor-Backend
-RUN --mount=type=cache,id=/gradle,target=/root/.gradle \
-    DEPLOYING_ON_RAILWAY=true ./../gradlew ...
+RUN --mount=type=cache,target=/root/.gradle \
+    rm -rf /root/.gradle && \
+    DEPLOYING_ON_RAILWAY=true ./../gradlew :Ktor-Backend:installDist --no-daemon
 
 # Runtime image
 FROM openjdk:11-jre-slim
