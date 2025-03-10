@@ -1,8 +1,7 @@
-# Build stage
 FROM gradle:7.3.3-jdk11 AS builder
 WORKDIR /app
 
-# Copy necessary files (keep existing setup)
+# Copy only necessary files
 COPY gradle/ /app/gradle/
 COPY gradlew /app/
 COPY Ktor-Backend/build.gradle.kts /app/Ktor-Backend/
@@ -10,15 +9,15 @@ COPY Ktor-Backend/src/ /app/Ktor-Backend/src/
 COPY settings.gradle.kts /app/
 COPY gradle.properties /app/
 
-# Make gradlew executable
+# Set execute permissions
 RUN chmod +x /app/gradlew
 
-# Build with Railway-compliant cache mount
+# Build with Railway-compliant cache
 WORKDIR /app/Ktor-Backend
-RUN --mount=type=cache,id=gradle-cache,target=/root/.gradle \
+RUN --mount=type=cache,id=gradle-cache-$RAILWAY_PROJECT_ID,target=/root/.gradle \
     ./../gradlew :Ktor-Backend:installDist --no-daemon
 
-# Runtime image (keep existing setup)
+# Runtime image
 FROM openjdk:11-jre-slim
 WORKDIR /app
 COPY --from=builder /app/Ktor-Backend/build/install/Ktor-Backend /app/
