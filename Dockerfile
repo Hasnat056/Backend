@@ -1,25 +1,29 @@
-FROM gradle:7.3.3-jdk11 AS builder
+FROM gradle:8.10.2-jdk11 AS builder
 WORKDIR /app
 
-# Copy only Ktor backend files
-COPY gradle/ /app/gradle/
-COPY gradlew /app/
-COPY Ktor-Backend/build.gradle.kts /app/Ktor-Backend/
-COPY Ktor-Backend/src/ /app/Ktor-Backend/src/
-COPY settings.gradle.kts /app/
-COPY gradle.properties /app/
+# Copy necessary files
+COPY gradle/ gradle/
+COPY gradlew .
+COPY build.gradle.kts .
+COPY settings.gradle.kts .
+COPY gradle.properties .
+COPY src/ src/
 
 # Set environment variable to exclude Android
 ENV DEPLOYING_ON_RAILWAY=true
 
-# Build only Ktor backend
-RUN chmod +x /app/gradlew && \
-    cd /app/Ktor-Backend && \
-    ./../gradlew :Ktor-Backend:installDist --no-daemon
+# Build the project
+RUN sed -i 's/\r$//' gradlew && \
+    chmod +x ./gradlew && \
+    ./gradlew --no-daemon installDist -Dorg.gradle.java.home=/opt/java/openjdk
+
 
 # Runtime image
 FROM openjdk:11-jre-slim
 WORKDIR /app
-COPY --from=builder /app/Ktor-Backend/build/install/Ktor-Backend /app/
+
+# Copy built distribution
+COPY --from=builder /app/build/install/Ktor-Backend /app/
+
 EXPOSE 8080
 CMD ["./bin/Ktor-Backend"]
