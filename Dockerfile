@@ -14,8 +14,8 @@ RUN chmod +x /app/gradlew
 
 # Build with Railway-compliant cache
 WORKDIR /app/Ktor-Backend
-RUN --mount=type=cache,id=gradle-cache:dependencies,target=/root/.gradle \
-    ./../gradlew :Ktor-Backend:installDist --no-daemon
+RUN ./../gradlew :Ktor-Backend:installDist --no-daemon
+
 
 
 
