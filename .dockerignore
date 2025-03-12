@@ -1,0 +1,7 @@
+# Exclude Android files
+app/
+local.properties
+.gradle
+build/
+.idea/
+*.iml
