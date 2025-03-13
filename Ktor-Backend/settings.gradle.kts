@@ -22,7 +22,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "MyLMS1.1"
+rootProject.name = "Ktor-Backend"
 
 // Conditionally include modules
 if (!System.getenv().containsKey("DEPLOYING_ON_RAILWAY")) {
